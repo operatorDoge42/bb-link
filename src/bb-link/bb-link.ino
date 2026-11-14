@@ -37,7 +37,7 @@ void setup()
   Serial.println("| _ \\_| _ \\_  | |__| | ' \\| / /");
   Serial.println("|___(_)___(_) |____|_|_||_|_\\_\\\n");
 
-  Serial.printf("Booting up %s v%d.%d.%d on %s v%d.%d\n\n", adapter->getAdapterName().c_str(), FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR, FIRMWARE_VERSION_PATCH, HARDWARE_BOARD == hardware_board_tinypico ? "TinyPICO" : "Pico32", HARDWARE_VERSION_MAJOR, HARDWARE_VERSION_MINOR);
+  Serial.printf("Booting up %s v%d.%d.%d on %s v%d.%d\n\n", adapter->getAdapterName().c_str(), FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR, FIRMWARE_VERSION_PATCH, HARDWARE_BOARD_NAME, HARDWARE_VERSION_MAJOR, HARDWARE_VERSION_MINOR);
 
   Serial.printf("Heap free: %d, usage: %d %%\n", ESP.getFreeHeap(), 100 - (ESP.getFreeHeap() * 100) / ESP.getHeapSize());
   // ESP.getFreeSketchSpace() returns the total sketch space

@@ -12,6 +12,8 @@
 #include "StatusIndicatorDummy.h"
 #if defined(ARDUINO_TINYPICO)
 #include "StatusIndicator.h"
+#elif defined(ARDUINO_M5Stack_ATOM)
+#include "StatusIndicatorAtomLite.h"
 #endif
 
 #include "TouchButtonBase.h"
@@ -43,12 +45,18 @@ enum hardware_board_t {
 
 #if defined(ARDUINO_TINYPICO)
 #define HARDWARE_BOARD hardware_board_tinypico
+#define HARDWARE_BOARD_NAME "TinyPICO"
 #define HARDWARE_VERSION_MAJOR 3
 #define HARDWARE_VERSION_MINOR 0
 #endif
 
-#if defined(ARDUINO_ESP32_PICO)
+#if defined(ARDUINO_ESP32_PICO) || defined(ARDUINO_M5Stack_ATOM)
 #define HARDWARE_BOARD hardware_board_pico32
+#if defined(ARDUINO_M5Stack_ATOM)
+#define HARDWARE_BOARD_NAME "M5Stack Atom Lite"
+#else
+#define HARDWARE_BOARD_NAME "Pico32"
+#endif
 #define HARDWARE_VERSION_MAJOR 1
 #define HARDWARE_VERSION_MINOR 0
 #endif
@@ -78,6 +86,9 @@ private:
   TinyPICO tp = TinyPICO();
   StatusIndicator statusIndicator = StatusIndicator(tp);
   TouchButton touchButton = TouchButton(CAPACITIVE_TOUCH_INPUT_PIN);
+#elif defined(ARDUINO_M5Stack_ATOM)
+  StatusIndicatorAtomLite statusIndicator = StatusIndicatorAtomLite();
+  TouchButtonDummy touchButton = TouchButtonDummy();
 #else
   StatusIndicatorDummy statusIndicator = StatusIndicatorDummy();
   TouchButtonDummy touchButton = TouchButtonDummy();

@@ -14,6 +14,18 @@ The adapter is based on the ESP32 microcontroller, which provides support for bo
 
 **Note: Compatibility is limited to ESP32 microcontroller. Boards like the TinyS3, which use the ESP32-S3 chip, do not support Bluetooth Classic. If you don't use the TinyPICO, make sure to choose a board that features the ESP32 microcontroller.**
 
+### M5Stack Atom Lite
+
+The firmware also supports the original M5Stack Atom Lite (ESP32-PICO-D4). It uses the Atom Lite's single RGB LED on GPIO27 for status and leaves its button unused. The Atom Lite is not the Atom Matrix and does not have a 5×5 LED display. The Atom's standard partition layout has one application slot, so BLE firmware updates are disabled automatically; update it over USB instead. The BLE-to-KISS and Bluetooth Classic radio bridge behavior is unchanged.
+
+To compile for the Atom Lite, install Espressif Arduino core 2.0.15 and the ArduinoLog 1.1.1, ArduinoQueue 1.2.5, and Adafruit NeoPixel 1.15.5 libraries, then run:
+
+```sh
+./scripts/build-atom-lite.sh
+```
+
+The script compiles only; it does not upload or erase the board. The resulting `.bin` is written under `build/atom-lite/`. The default Atom partition table has one 3 MB app slot and no second OTA slot. The RGB LED is amber while waiting, blue while scanning/connected to the radio, cyan when ready, green for receive, red for transmit/errors, and purple for duplex activity. Because there is one RGB pixel, TX and RX cannot be shown as separate simultaneous lamps.
+
 ### Material
 
 1. TinyPICO [Buy](https://unexpectedmaker.com/shop.html#!/TinyPICO/p/577111313/category=154494282)
@@ -54,6 +66,7 @@ https://github.com/islandmagic/bb-link/tree/master/enclosure/contribs/F4LFJ
 1. Install FreeRTOS library
 1. Install ArduinoQueue library
 1. Install ArduinoLog library
+1. For Atom Lite builds, install Adafruit NeoPixel library
 1. Clone this repo
 1. Flash the code to the TinyPICO board
 1. Download [B.B. Link Configurator](https://apps.apple.com/us/app/b-b-link-configurator/id6476163710) app on your phone

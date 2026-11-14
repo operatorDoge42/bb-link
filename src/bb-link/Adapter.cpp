@@ -145,6 +145,14 @@ void Adapter::initBLEOtaService()
 {
   Log.traceln("Adapter: init BLE OTA service");
 
+  // Some compatible ESP32 boards use a single app partition. Do not expose
+  // the OTA endpoint unless the partition table has a second update slot.
+  if (esp_ota_get_next_update_partition(NULL) == nullptr)
+  {
+    Log.warningln("BLE OTA unavailable: no update partition");
+    return;
+  }
+
   // Create the BLE Service for OTA
   BLEService *pOtaService = bridge.getBLEServer()->createService(SERVICE_UUID_OTA);
 
@@ -273,11 +281,18 @@ void Adapter::onWrite(BLECharacteristic *pCharacteristic)
 {
   std::string rxData = pCharacteristic->getValue();
 
+  const esp_partition_t *updatePartition = esp_ota_get_next_update_partition(NULL);
+  if (updatePartition == nullptr)
+  {
+    Log.errorln("OTA: no update partition available");
+    return;
+  }
+
   if (!adapterStateMachine.isInState(otaFlashState))
   {
     Log.infoln("OTA: begin flash");
     adapterStateMachine.immediateTransitionTo(otaFlashState);
-    esp_ota_begin(esp_ota_get_next_update_partition(NULL), OTA_SIZE_UNKNOWN, &otaHandle);
+    esp_ota_begin(updatePartition, OTA_SIZE_UNKNOWN, &otaHandle);
   }
 
   if (rxData.length() > 0)
@@ -289,7 +304,7 @@ void Adapter::onWrite(BLECharacteristic *pCharacteristic)
   {
     Log.infoln("OTA: end flash");
     esp_ota_end(otaHandle);
-    if (esp_ota_set_boot_partition(esp_ota_get_next_update_partition(NULL)) == ESP_OK)
+    if (esp_ota_set_boot_partition(updatePartition) == ESP_OK)
     {
       Log.infoln("OTA: success, rebooting");
       delay(2000);
