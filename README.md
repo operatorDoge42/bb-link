@@ -14,9 +14,11 @@ The adapter is based on the ESP32 microcontroller, which provides support for bo
 
 **Note: Compatibility is limited to ESP32 microcontroller. Boards like the TinyS3, which use the ESP32-S3 chip, do not support Bluetooth Classic. If you don't use the TinyPICO, make sure to choose a board that features the ESP32 microcontroller.**
 
+> **Board-specific instructions:** The material, power, button, LED, battery, and shutdown sections below describe the TinyPICO reference build, which uses a LiPo battery, a DotStar status LED, and a capacitive touch control. The [Atom Lite port](#m5stack-atom-lite) is different: it has no built-in battery, uses one RGB status LED, leaves its button unused, and has no battery or shutdown controls. Follow the Atom Lite notes for its build, LED states, and USB-only firmware updates. The radio and pairing instructions apply to both boards.
+
 ### M5Stack Atom Lite
 
-The firmware also supports the original M5Stack Atom Lite (ESP32-PICO-D4). It uses the Atom Lite's single RGB LED on GPIO27 for status and leaves its button unused. The Atom Lite is not the Atom Matrix and does not have a 5×5 LED display. The Atom's standard partition layout has one application slot, so BLE firmware updates are disabled automatically; update it over USB instead. The BLE-to-KISS and Bluetooth Classic radio bridge behavior is unchanged.
+The experimental Atom Lite port supports the original M5Stack Atom Lite (ESP32-PICO-D4). It uses the Atom Lite's single RGB LED on GPIO27 for status and leaves its built-in button unused. The Atom Lite is not the Atom Matrix and does not have a 5×5 LED display. It has no built-in battery, and this port does not implement battery monitoring or automatic shutdown; it stays awake while powered. The standard Atom partition layout has one application slot, so BLE firmware updates are disabled automatically; update it over USB instead. The BLE-to-KISS and Bluetooth Classic radio bridge behavior is unchanged.
 
 To compile for the Atom Lite, install Espressif Arduino core 2.0.15 and the ArduinoLog 1.1.1, ArduinoQueue 1.2.5, and Adafruit NeoPixel 1.15.5 libraries, then run:
 
@@ -26,18 +28,18 @@ To compile for the Atom Lite, install Espressif Arduino core 2.0.15 and the Ardu
 
 The script compiles only; it does not upload or erase the board. The resulting `.bin` is written under `build/atom-lite/`. The default Atom partition table has one 3 MB app slot and no second OTA slot. The RGB LED is amber while waiting, blue while scanning/connected to the radio, cyan when ready, green for receive, red for transmit/errors, and purple for duplex activity. Because there is one RGB pixel, TX and RX cannot be shown as separate simultaneous lamps.
 
-### Material
+### Material (TinyPICO reference build)
 
 1. TinyPICO [Buy](https://unexpectedmaker.com/shop.html#!/TinyPICO/p/577111313/category=154494282)
 2. 600 mAh LiPo Battery model 602248 (6x22x48mm) [Buy](https://www.aliexpress.us/item/2251832520607268.html)
 3. 3D Printed case
 4. Brad fastener as touch button (8mm head)
 
-### Power Options
+### Power Options (TinyPICO reference build)
 
 The adapter can be powered via USB, such as through a USB adapter or a portable power bank, or alternatively, it can be connected to a LiPo battery for use on the go. The TinyPICO will charge the battery when plugged into USB.
 
-### Capacitive Touch Button
+### Capacitive Touch Button (TinyPICO only)
 
 The installation of a capacitive touch button is not required but recommended if you need an on/off switch while using a LiPo battery. To install, connect a wire to pin number 4 on the TinyPICO board; this will serve as the on/off control.
 
@@ -91,7 +93,7 @@ By default, the adapter will set the radio to KISS mode and automatically respon
 1. Tap 'Paired Radio' on B.B. Link app
 1. Wait a few seconds, the name of your radio should appear in the list. Select it.
 1. After a few seconds a PIN prompt should appear on the radio. Press 'OK' to accept. This step is only necessary once; afterwards, the adapter will automatically try to reconnect with the radio.
-1. Successful pairing is indicated by a breathing blue LED on the adapter.
+1. On the TinyPICO, successful pairing is indicated by a breathing blue LED. Atom Lite LED states are described in the Atom Lite section above.
 
 ### Pairing with iPhone or iPad
 
@@ -100,21 +102,21 @@ By default, the adapter will set the radio to KISS mode and automatically respon
 1. `B.B. Link` should be visible in the discovery screen.
 1. Select `B.B. Link` and tap 'Done'.
 1. Navigate to the connection screen and choose a packet station.
-1. A solid blue LED on the adapter signals that RadioMail has connected. Red and green LEDs will flash to indicate data transmission and reception.
+1. On the TinyPICO, a solid blue LED signals that RadioMail has connected; the DotStar changes to red for transmit and green for receive. Atom Lite uses cyan when ready, red for transmit, and green for receive.
 
-### Powering Off
+### Powering Off (TinyPICO only)
 
 - The adapter will shut off automatically after 5 minutes when not in use on battery power. It stays on indefinitely if USB power is detected.
 - To manually turn off the adapter, press and hold the touch button until the LED blinks amber, then release.
 
-### User Interface
+### User Interface (TinyPICO reference build)
 
-#### Touch Button Functions
+#### Touch Button Functions (TinyPICO only)
 
 - **Short Press**: Wake the adapter or check the battery status when idle.
 - **Long Press**: Turn off the adapter.
 
-#### LED Indicator
+#### LED Indicator (TinyPICO DotStar)
 
 The dotstar tri-color LED is used to indicate various states:
 
@@ -140,14 +142,14 @@ Battery Status Indicators:
 - 🟢: Battery full
 - 🟢 (fast blink): Battery low
 
-#### Battery Indicator
+#### Battery Indicator (TinyPICO + LiPo)
 
 The charge level of a LiPO battery can be difficult to determine without additional circuitry due to their non-linear discharge curve. A basic battery indicator is provided based on the battery voltage level:
 
 1. Upon waking up, the adapter displays the battery level for a few seconds. A solid green light indicates the battery is considered full, while a flashing green light suggests the battery needs charging.
 1. When the adapter is idle (indicated by an amber LED), a short tap will activate the battery level display.
 
-### Battery Saver
+### Battery Saver (TinyPICO + LiPo)
 
 To save energy, the adapter automatically enters a low-power sleep mode after a certain period of not being used, for instance, when no phone is connected, during which it consumes approximately 40 µA. While active, the adapter's power consumption is around 140 mA, allowing for continuous operation for up to 4 hours on a 600 mAh battery. In standby mode, with no active bluetooth connection, it uses about 80 mA. Additionally, the sleep feature is disabled when the adapter is connected to USB power, ensuring that the adapter can stay on for longer durations and can be used while it is being charged.
 
