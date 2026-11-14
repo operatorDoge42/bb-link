@@ -1,5 +1,7 @@
 # B.B. Link, the BLE to Bluetooth Classic adapter for Kenwood TH-D74/5 Radios
 
+> **Unofficial Atom Lite port:** This fork adapts the original [B.B. Link project by islandmagic](https://github.com/islandmagic/bb-link) for the original M5Stack Atom Lite. It is an experimental community port, not an official upstream release. See the [Atom Lite guide](docs/ATOM_LITE.md) for the matching firmware download, installation steps, board behavior, and credits. This fork's Atom Lite modifications are dated 2026-11-13 and remain under the upstream GNU GPL v3 license; the corresponding source is available in this repository.
+
 Some devices, like the Kenwood TH-D75 radio only support Bluetooth Classic serial profile. iOS devices only support Bluetooth Low Energy (BLE). They are not compatible and as such, you can't pair those devices together. This code provides a way to create an adapter that can interface a device that exposes a serial profile over Bluetooth Classic, to an iOS device via BLE. Its main purpose is to enable iOS app that supports AX.25 packet like RadioMail or APRS.fi to use the TNC built in the radio as a modem.
 
 For a detailed "how-to build" this adapter, watch this video: 
@@ -14,11 +16,11 @@ The adapter is based on the ESP32 microcontroller, which provides support for bo
 
 **Note: Compatibility is limited to ESP32 microcontroller. Boards like the TinyS3, which use the ESP32-S3 chip, do not support Bluetooth Classic. If you don't use the TinyPICO, make sure to choose a board that features the ESP32 microcontroller.**
 
-> **Board-specific instructions:** The material, power, button, LED, battery, and shutdown sections below describe the TinyPICO reference build, which uses a LiPo battery, a DotStar status LED, and a capacitive touch control. The [Atom Lite port](#m5stack-atom-lite) is different: it has no built-in battery, uses one RGB status LED, leaves its button unused, and has no battery or shutdown controls. Follow the Atom Lite notes for its build, LED states, and USB-only firmware updates. The radio and pairing instructions apply to both boards.
+> **Board-specific instructions:** The material, power, button, LED, battery, and shutdown sections below describe the TinyPICO reference build, which uses a LiPo battery, a DotStar status LED, and a capacitive touch control. The [Atom Lite port](#m5stack-atom-lite) is different: it has no built-in battery, uses one RGB status LED, leaves its button unused, and has no battery or shutdown controls. Its default partition table provides two app slots and the firmware exposes BLE OTA; that update path has not been qualified end to end on Atom Lite, so use the factory USB image for initial installation. The radio and pairing instructions apply to both boards.
 
 ### M5Stack Atom Lite
 
-The experimental Atom Lite port supports the original M5Stack Atom Lite (ESP32-PICO-D4). It uses the Atom Lite's single RGB LED on GPIO27 for status and leaves its built-in button unused. The Atom Lite is not the Atom Matrix and does not have a 5×5 LED display. It has no built-in battery, and this port does not implement battery monitoring or automatic shutdown; it stays awake while powered. The standard Atom partition layout has one application slot, so BLE firmware updates are disabled automatically; update it over USB instead. The BLE-to-KISS and Bluetooth Classic radio bridge behavior is unchanged.
+The experimental Atom Lite port supports the original M5Stack Atom Lite (ESP32-PICO-D4). It uses the Atom Lite's single RGB LED on GPIO27 for status and leaves its built-in button unused. The Atom Lite is not the Atom Matrix and does not have a 5×5 LED display. It has no built-in battery, and this port does not implement battery monitoring or automatic shutdown; it stays awake while powered. The default M5Stack Atom partition table used here has two app slots, so the firmware exposes its BLE OTA service. The Atom Lite OTA update flow has not been qualified end to end; use the factory USB image for initial installation. The BLE-to-KISS and Bluetooth Classic radio bridge behavior is unchanged.
 
 To compile for the Atom Lite, install Espressif Arduino core 2.0.15 and the ArduinoLog 1.1.1, ArduinoQueue 1.2.5, and Adafruit NeoPixel 1.15.5 libraries, then run:
 
@@ -26,7 +28,7 @@ To compile for the Atom Lite, install Espressif Arduino core 2.0.15 and the Ardu
 ./scripts/build-atom-lite.sh
 ```
 
-The script compiles only; it does not upload or erase the board. The resulting `.bin` is written under `build/atom-lite/`. The default Atom partition table has one 3 MB app slot and no second OTA slot. The RGB LED is amber while waiting, blue while scanning/connected to the radio, cyan when ready, green for receive, red for transmit/errors, and purple for duplex activity. Because there is one RGB pixel, TX and RX cannot be shown as separate simultaneous lamps.
+The script compiles only; it does not upload or erase the board. The resulting application `.bin` is written under `build/atom-lite/`. To download and install a prebuilt factory image, follow the [Atom Lite guide](docs/ATOM_LITE.md). The RGB LED is amber while waiting, blue while scanning/connected to the radio, cyan when ready, green for receive, red for transmit/errors, and purple for duplex or OTA activity. Because there is one RGB pixel, TX and RX cannot be shown as separate simultaneous lamps.
 
 ### Material (TinyPICO reference build)
 
