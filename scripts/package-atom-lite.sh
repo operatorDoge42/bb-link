@@ -20,6 +20,7 @@ ARDUINO_CLI="$CLI" "$SCRIPT_DIR/build-atom-lite.sh"
 mkdir -p "$RELEASE_DIR"
 
 IMAGE="$RELEASE_DIR/bb-link-atom-lite-v$VERSION-factory.bin"
+APP_IMAGE="$RELEASE_DIR/bb-link-atom-lite-v$VERSION-app.bin"
 "$ESPTOOL" --chip esp32 merge_bin \
   --target-offset 0 \
   --fill-flash-size 4MB \
@@ -31,11 +32,14 @@ IMAGE="$RELEASE_DIR/bb-link-atom-lite-v$VERSION-factory.bin"
   0x8000 "$BUILD_DIR/bb-link.ino.partitions.bin" \
   0xe000 "$BOOT_APP0" \
   0x10000 "$BUILD_DIR/bb-link.ino.bin"
+cp "$BUILD_DIR/bb-link.ino.bin" "$APP_IMAGE"
 
 (
   cd "$RELEASE_DIR"
-  IMAGE_NAME=$(basename "$IMAGE")
-  shasum -a 256 "$IMAGE_NAME" > "$IMAGE_NAME.sha256.txt"
+  for PACKAGE_IMAGE in "$(basename "$IMAGE")" "$(basename "$APP_IMAGE")"; do
+    shasum -a 256 "$PACKAGE_IMAGE" > "$PACKAGE_IMAGE.sha256.txt"
+  done
 )
 echo "Factory firmware: $IMAGE"
+echo "App-only firmware: $APP_IMAGE"
 echo "Checksum: $IMAGE.sha256.txt"

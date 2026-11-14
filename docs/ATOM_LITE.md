@@ -4,9 +4,9 @@
 
 ## Download
 
-Download the [Atom Lite factory firmware](https://github.com/operatorDoge42/bb-link/releases/download/atom-lite-v0.1.0-alpha.1/bb-link-atom-lite-v0.1.0-alpha.1-factory.bin) and its [SHA-256 checksum](https://github.com/operatorDoge42/bb-link/releases/download/atom-lite-v0.1.0-alpha.1/bb-link-atom-lite-v0.1.0-alpha.1-factory.bin.sha256.txt) from this fork's experimental [Atom Lite release](https://github.com/operatorDoge42/bb-link/releases/tag/atom-lite-v0.1.0-alpha.1).
+From this fork's experimental [Atom Lite release](https://github.com/operatorDoge42/bb-link/releases/tag/atom-lite-v0.1.0-alpha.1), download either the [factory firmware](https://github.com/operatorDoge42/bb-link/releases/download/atom-lite-v0.1.0-alpha.1/bb-link-atom-lite-v0.1.0-alpha.1-factory.bin) or the [app-only firmware](https://github.com/operatorDoge42/bb-link/releases/download/atom-lite-v0.1.0-alpha.1/bb-link-atom-lite-v0.1.0-alpha.1-app.bin). Each has a matching SHA-256 checksum alongside it.
 
-The factory image contains the ESP32 bootloader, partition table, initial OTA data, and application, combined into one 4 MB image. Flashing it replaces the Atom Lite's full flash contents, including previously saved radio pairing and adapter settings. The matching source code and this guide are included in the release's source archive; the source is also browsable [at the release tag](https://github.com/operatorDoge42/bb-link/tree/atom-lite-v0.1.0-alpha.1).
+The 4 MB factory image contains the ESP32 bootloader, partition table, initial OTA data, and application. Flashing it replaces the Atom Lite's full flash contents, including previously saved radio pairing and adapter settings. The smaller app-only image updates the firmware at `0x10000` and preserves saved pairing and adapter settings. Use it only on an Atom Lite already running this port; use the factory image for a fresh install or recovery. The matching source code and this guide are included in the release's source archive; the source is also browsable [at the release tag](https://github.com/operatorDoge42/bb-link/tree/atom-lite-v0.1.0-alpha.1).
 
 ## Install on a Mac
 
@@ -18,6 +18,13 @@ This procedure is for a fresh USB installation or recovery. It uses Espressif's 
 4. In the Program area, set the flash address to `0x0` and select the factory `.bin` file. Set flash mode to `DIO`, frequency to `40 MHz`, and size to `4 MB`.
 5. Start programming and wait for it to finish. The full image overwrites the device flash, so its saved pairing and settings are reset.
 6. Unplug and reconnect the Atom Lite. It should start advertising as **B.B. Link** over BLE.
+
+### Update an existing Atom Lite port without resetting its settings
+
+1. Download the app-only `.bin` from the release.
+2. Open [Espressif ESP Tool](https://espressif.github.io/esptool-js/) in Chrome or Edge, connect the Atom Lite's serial port, and choose the app-only image.
+3. Set the flash address to `0x10000`, flash mode to `DIO`, frequency to `40 MHz`, and size to `4 MB`. Leave **Erase all** unchecked.
+4. Start programming and wait for it to finish. Reconnect the Atom Lite and use it as before.
 
 ## Pair and use
 
