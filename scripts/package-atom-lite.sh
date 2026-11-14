@@ -32,6 +32,10 @@ IMAGE="$RELEASE_DIR/bb-link-atom-lite-v$VERSION-factory.bin"
   0xe000 "$BOOT_APP0" \
   0x10000 "$BUILD_DIR/bb-link.ino.bin"
 
-shasum -a 256 "$IMAGE" > "$IMAGE.sha256.txt"
+(
+  cd "$RELEASE_DIR"
+  IMAGE_NAME=$(basename "$IMAGE")
+  shasum -a 256 "$IMAGE_NAME" > "$IMAGE_NAME.sha256.txt"
+)
 echo "Factory firmware: $IMAGE"
 echo "Checksum: $IMAGE.sha256.txt"

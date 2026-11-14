@@ -34,7 +34,7 @@ The adapter bridges the radio's Bluetooth Classic serial connection to the iPhon
 - The Atom Lite's button is unused by this port.
 - There is no built-in LiPo battery, battery monitoring, or battery shutdown. It runs while powered; unplug USB to turn it off.
 - Amber: powered and waiting. Blue: searching for or connected to the radio. Cyan: phone and radio ready. Green: receiving. Red: transmitting or error. Purple: simultaneous RX/TX or firmware update.
-- The BLE OTA service is present, and this build's partition table has two app slots. OTA updating has not been tested end to end on the Atom Lite, so the factory USB method above is the known installation and recovery path.
+- BLE firmware updates through the B.B. Link Configurator are intentionally disabled on Atom Lite. This port uses the same Pico32 hardware ID as the generic board, and the Configurator currently maps that ID to the upstream project's Pico32 update feed. That could replace this Atom Lite-specific firmware with the upstream generic Pico32 build. Install Atom Lite updates from this fork over USB using the factory method above.
 
 ## Build from source
 

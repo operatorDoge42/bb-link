@@ -145,6 +145,15 @@ void Adapter::initBLEOtaService()
 {
   Log.traceln("Adapter: init BLE OTA service");
 
+#if defined(ARDUINO_M5Stack_ATOM)
+  // The Configurator maps this port's shared Pico32 hardware ID to the
+  // upstream Pico32 update feed. Keep BLE OTA hidden until it can select an
+  // Atom Lite-specific feed, so it cannot replace this board port with an
+  // upstream firmware image.
+  Log.warningln("BLE OTA disabled on Atom Lite; update over USB");
+  return;
+#endif
+
   // Some compatible ESP32 boards use a single app partition. Do not expose
   // the OTA endpoint unless the partition table has a second update slot.
   if (esp_ota_get_next_update_partition(NULL) == nullptr)
